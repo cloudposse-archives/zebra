@@ -1,0 +1,10 @@
+#!/usr/bin/env ruby
+$:.unshift(File.expand_path('.')) # Ruby 1.9 doesn't have . in the load path...
+$:.push(File.expand_path('lib/')) 
+$0 = __FILE__  + " " + ARGV.join(" ")
+
+require 'rubygems'
+require 'zebra'
+
+command_line = Zebra::CommandLine.new
+command_line.execute
