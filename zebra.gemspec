@@ -8,8 +8,8 @@ Gem::Specification.new do |s|
   s.authors     = ["osterman"]
   s.email       = ["e@osterman.com"]
   s.homepage    = "https://github.com/osterman/zebra"
-  s.summary     = %q{A Goliath ZMQ Reverse HTTP Proxy Implementation}
-  s.description = %q{A proxy that uses ZMQ as the wire protocol between HTTP proxy gateway and backend worker nodes. This allows for each load distribution to worker nodes behind a firewall.}
+  s.summary     = %q{A Goliath Reverse HTTP Proxy Implementation Using ZMQ}
+  s.description = %q{Zebra is a HTTP proxy server that uses ZMQ as the wire protocol between HTTP proxy gateway(s) and backend worker node(s). This allows for seamless load distribution to worker nodes behind a firewall.}
 
   s.rubyforge_project = "zebra"
 
