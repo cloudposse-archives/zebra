@@ -39,16 +39,15 @@ module Zebra
         Zebra.config.mode = ARGV.shift if ARGV.length > 0
         raise MissingArgumentException.new("Missing --config parameter") unless Zebra.config.config_file?
         raise MissingArgumentException.new("Missing mode of operation: server|proxy|queue") unless Zebra.config.mode?
+      rescue SystemExit 
+        exit(1)
       rescue MissingArgumentException => e
         puts usage(e)
-        exit 1
       rescue ArgumentError => e
         puts usage(e)
-        exit 1
       rescue Exception => e
-        puts e.message
+        puts "#{e.class}: #{e.message}"
         puts e.backtrace.join("\n\t")
-        exit 1
       end
     end
 
