@@ -27,8 +27,7 @@ module Zebra
       raw_headers
     end
 
-    def get_conn(url)
-      uri = URI.parse(url)
+    def get_conn(uri)
       conn_key = uri.scheme + '://' + uri.host
       return EM::HttpRequest.new(conn_key, :connect_timeout => 1, :inactivity_timeout => 1)
       if @conns.has_key?(conn_key)
@@ -38,12 +37,11 @@ module Zebra
       end
     end
 
-    def fetch(method, url, request_headers = {})
+    def fetch(method, uri, request_headers = {})
       @response = nil
-      @logger.debug "Proxying #{method} #{url} #{request_headers.inspect}"
+      @logger.debug "Proxying #{method} #{uri} #{request_headers.inspect}"
       t_start = Time.now
-      uri = URI.parse(url)
-      conn = get_conn(url)
+      conn = get_conn(uri)
       request_headers['Host'] = uri.host
       http = conn.send(method, path: uri.path, query: uri.query, head: request_headers, :keepalive => true)
       @logger.debug "Request finished"
@@ -67,10 +65,15 @@ module Zebra
     def handle_message(m)
       #ap m.copy_out_string
       env = JSON.parse(m.copy_out_string)
-      #url = 'http://' + env['HTTP_HOST'] + env['REQUEST_URI']
-      url = env['REQUEST_URI'] 
+      uri = URI.parse(env['REQUEST_URI'])
+      uri.host = env['HTTP_HOST'] if uri.host.nil? || uri.host.empty?
+      uri.path = '/' if uri.path.nil? || uri.path.empty?
+      puts env.inspect
+      uri.scheme = env['HTTP_X_FORWARDED_PROTO'].downcase if env.has_key?('HTTP_X_FORWARDED_PROTO')
+      uri.scheme = 'http' if uri.scheme.nil? || uri.scheme.empty?
       method = env['REQUEST_METHOD'].downcase.to_sym
-      fetch(method, url)
+      puts "uri: #{uri.to_s}"
+      fetch(method, uri)
     end
 
     def on_readable(socket, messages)
@@ -100,6 +103,9 @@ module Zebra
                  :app_name => @app_name,
                  :logger => @log,
                  :timeout => @timeout }
+      params[:stdout_path] = Zebra.config.log_file if Zebra.config.log_file?
+      params[:stderr_path] = Zebra.config.log_file if Zebra.config.log_file?
+
       workers = Preforker.new(params) do |master|
         config = {:logger => @log}
         handler = ProxyWorkerReceiveMessageHandler.new(config)
