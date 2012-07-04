@@ -1,0 +1,13 @@
+Usage:
+
+# First start the queue
+zebra --config contrib/config.yml queue
+
+# Then start the workers
+zebra --config contrib/config.yml worker
+
+# Then start the proxy server
+zebra --config contrib/config.yml server
+
+# For more arguments, check out:
+zebra --help
