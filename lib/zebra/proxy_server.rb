@@ -16,7 +16,7 @@ module Zebra
       config[:context] = EM::ZeroMQ::Context.new(1)
       config[:connection_pool] = EM::Synchrony::ConnectionPool.new(:size => 20) do  
         config[:context].socket(ZMQ::REQ) do |socket|
-          socket.connect("tcp://localhost:5559")
+          socket.connect(Zebra.config.server[:frontend_uri])
         end
       end
     end

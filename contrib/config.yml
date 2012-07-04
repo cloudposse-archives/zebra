@@ -1,1 +1,12 @@
 #log_file: "/tmp/zebra.log"
+server:
+  port: 8000
+  chdir: "/tmp"
+  frontend_uri: 'tcp://localhost:5600'
+queue:
+  frontend_uri: 'tcp://*:5600'
+  backend_uri: 'tcp://*:5601'
+worker:
+  timeout: 3600
+  workers: 10
+  backend_uri: 'tcp://localhost:5601'

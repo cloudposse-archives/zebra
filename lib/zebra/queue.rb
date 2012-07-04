@@ -5,8 +5,8 @@ module Zebra
     attr_accessor :context, :frontend, :backend, :poller, :log, :frontend_uri, :backend_uri
     def initialize(config)
       @log = config[:logger] || Logger.new(STDERR)
-      @frontend_uri = config[:frontend] || 'tcp://*:5559'
-      @backend_uri = config[:backend] || 'tcp://*:5560'
+      @frontend_uri = config[:frontend_uri] || 'tcp://*:5559'
+      @backend_uri = config[:backend_uri] || 'tcp://*:5560'
       @context = ZMQ::Context.new
 
       # Socket facing clients
