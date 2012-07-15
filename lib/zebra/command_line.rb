@@ -1,5 +1,4 @@
 require 'optparse'
-require 'daemons'
 
 module Zebra
 
